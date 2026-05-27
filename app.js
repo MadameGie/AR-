@@ -1,158 +1,92 @@
-const startButton =
-  document.querySelector('#startButton');
+const start = async () => {
 
-const landingPage =
-  document.querySelector('#landing-page');
+  const loading = document.querySelector("#loading");
 
-const loadingScreen =
-  document.querySelector('#loading-screen');
+  const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+    container: document.body,
+    imageTargetSrc: './target.mind',
 
-const scanGuide =
-  document.querySelector('#scan-guide');
+    uiScanning: false,
+    uiLoading: false,
+    uiError: false,
 
-const arScene =
-  document.querySelector('#arScene');
+    maxTrack: 1,
 
-const target =
-  document.querySelector('#target');
+    filterMinCF: 0.0001,
+    filterBeta: 0.01,
 
+    warmupTolerance: 5,
+    missTolerance: 5,
+  });
 
-// TARGET EVENTS
-target.addEventListener('targetFound', () => {
+  const {
+    renderer,
+    scene,
+    camera
+  } = mindarThree;
 
-  console.log('TARGET FOUND');
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
-});
+  renderer.domElement.style.position = 'fixed';
+  renderer.domElement.style.top = '0';
+  renderer.domElement.style.left = '0';
+  renderer.domElement.style.width = '100vw';
+  renderer.domElement.style.height = '100vh';
+  renderer.domElement.style.objectFit = 'cover';
 
-target.addEventListener('targetLost', () => {
+  const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+  scene.add(light);
 
-  console.log('TARGET LOST');
+  const anchor = mindarThree.addAnchor(0);
 
-});
+  // OBJECT TESTING DULU
+  const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x00ffcc,
+    metalness: 0.3,
+    roughness: 0.2,
+  });
 
-// START BUTTON
-startButton.addEventListener('click', async () => {
+  const cube = new THREE.Mesh(geometry, material);
 
-  try{
+  cube.position.set(0, 0, 0);
 
-    // SHOW LOADING
-    loadingScreen.style.display = 'flex';
+  anchor.group.add(cube);
 
+  anchor.onTargetFound = () => {
+    console.log("Kemasan Terdeteksi");
+  };
 
-    // IMPORTANT:
-    // SIMPLE CAMERA REQUEST
-    // DO NOT USE exact/environment
+  anchor.onTargetLost = () => {
+    console.log("Kemasan Hilang");
+  };
 
-    const stream =
-      await navigator.mediaDevices.getUserMedia({
+  await mindarThree.start();
 
-        video:true,
-        audio:false
+  // FORCE FULLSCREEN MOBILE
+  const enterFullscreen = async () => {
+    const el = document.documentElement;
 
-      });
-
-
-    // STOP TEMP STREAM
-    stream.getTracks().forEach(track => {
-      track.stop();
-    });
-
-
-    // SHOW AR
-    arScene.style.display = 'block';
-
-
-    // WAIT AFRAME READY
-    await new Promise(resolve => {
-
-      if(arScene.hasLoaded){
-
-        resolve();
-
-      }
-
-      else{
-
-        arScene.addEventListener(
-          'loaded',
-          resolve
-        );
-
-      }
-
-    });
-
-
-    // START MINDAR
-    const mindarSystem =
-      arScene.systems['mindar-image-system'];
-
-    await mindarSystem.start();
-
-
-    // FORCE REAR CAMERA AFTER START
-    const video =
-      document.querySelector('video');
-
-    if(video){
-
-      const devices =
-        await navigator.mediaDevices.enumerateDevices();
-
-      const backCamera =
-        devices.find(device => {
-
-          return (
-            device.kind === 'videoinput' &&
-            device.label.toLowerCase().includes('back')
-          );
-
-        });
-
-      if(backCamera){
-
-        const rearStream =
-          await navigator.mediaDevices.getUserMedia({
-
-            video:{
-              deviceId:{
-                exact: backCamera.deviceId
-              }
-            },
-
-            audio:false
-
-          });
-
-        video.srcObject = rearStream;
-
-      }
-
+    if (el.requestFullscreen) {
+      await el.requestFullscreen();
     }
+  };
 
+  document.body.addEventListener('click', enterFullscreen, {
+    once: true
+  });
 
-    // HIDE LANDING
-    landingPage.style.display = 'none';
+  // RENDER LOOP
+  renderer.setAnimationLoop(() => {
 
+    cube.rotation.y += 0.02;
 
-    // HIDE LOADING
-    loadingScreen.style.display = 'none';
+    renderer.render(scene, camera);
+  });
 
+  loading.style.display = 'none';
+};
 
-    // SHOW GUIDE
-    scanGuide.style.display = 'flex';
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-    alert(
-      'Camera gagal dibuka. Coba gunakan Chrome Android terbaru atau Safari iPhone.'
-    );
-
-  }
-
-});
+start();
