@@ -265,7 +265,8 @@ a-scene{
 html,
 body,
 a-scene,
-canvas{
+canvas,
+video{
 
   width:100vw !important;
   height:100vh !important;
@@ -276,13 +277,9 @@ canvas{
   overflow:hidden !important;
 }
 
-/* FIX CAMERA MOBILE */
 video{
 
   object-fit:cover !important;
-
-  width:100vw !important;
-  height:100vh !important;
 
   position:fixed !important;
 
