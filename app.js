@@ -17,6 +17,7 @@ const target =
   document.querySelector('#target');
 
 
+// TARGET FOUND
 target.addEventListener('targetFound', () => {
 
   console.log('TARGET FOUND');
@@ -24,6 +25,7 @@ target.addEventListener('targetFound', () => {
 });
 
 
+// TARGET LOST
 target.addEventListener('targetLost', () => {
 
   console.log('TARGET LOST');
@@ -35,12 +37,20 @@ startButton.addEventListener('click', async () => {
 
   try{
 
-    // REQUEST CAMERA
+    // SHOW LOADING
+    loadingScreen.style.display = 'flex';
+
+
+    // REQUEST CAMERA FIRST
     const stream =
       await navigator.mediaDevices.getUserMedia({
 
         video:{
-          facingMode:'environment'
+
+          facingMode:{
+            exact:'environment'
+          }
+
         },
 
         audio:false
@@ -48,17 +58,38 @@ startButton.addEventListener('click', async () => {
       });
 
 
-    // STOP TEMP STREAM
+    // CLOSE TEMP STREAM
     stream.getTracks().forEach(track => {
       track.stop();
     });
 
 
-    // SHOW LOADING
-    loadingScreen.style.display = 'flex';
+    // SHOW AR
+    arScene.style.display = 'block';
 
 
-    // START AR
+    // WAIT SCENE READY
+    await new Promise(resolve => {
+
+      if(arScene.hasLoaded){
+
+        resolve();
+
+      }
+
+      else{
+
+        arScene.addEventListener(
+          'loaded',
+          resolve
+        );
+
+      }
+
+    });
+
+
+    // START MINDAR
     await arScene.systems[
       'mindar-image-system'
     ].start();
@@ -66,10 +97,6 @@ startButton.addEventListener('click', async () => {
 
     // HIDE LANDING
     landingPage.style.display = 'none';
-
-
-    // SHOW SCENE
-    arScene.style.display = 'block';
 
 
     // HIDE LOADING
@@ -86,7 +113,7 @@ startButton.addEventListener('click', async () => {
     console.error(error);
 
     alert(
-      'Camera gagal dibuka atau browser tidak support.'
+      'Camera gagal dibuka. Pastikan HTTPS aktif dan browser mengizinkan kamera.'
     );
 
   }
