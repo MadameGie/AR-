@@ -1,218 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebAR Packaging</title>
 
-  <meta
-    name="viewport"
-    content="
-      width=device-width,
-      initial-scale=1.0,
-      maximum-scale=1.0,
-      user-scalable=no
-    "
-  />
+  <link rel="stylesheet" href="style.css" />
 
-  <meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
-  />
-
-  <meta
-    name="mobile-web-app-capable"
-    content="yes"
-  />
-
-  <title>Packaging AR</title>
-
-  <!-- CSS -->
-  <link
-    rel="stylesheet"
-    href="style.css"
-  />
-
-  <!-- FONT -->
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  />
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- AFRAME -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-
-  <!-- MINDAR -->
-  <script src="https://unpkg.com/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
 </head>
-
 <body>
 
-  <!-- LANDING -->
-  <section id="landing-page">
-
-    <div class="overlay"></div>
-
-    <div class="hero-content">
-
-      <div class="badge">
-        WEB AUGMENTED REALITY
-      </div>
-
-      <h1>
-        Interactive Packaging
-        Experience
-      </h1>
-
-      <p>
-        Scan your packaging directly from your browser
-        and explore immersive 3D visualization.
-      </p>
-
-      <button id="startButton">
-        START AR SCAN
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- LOADING -->
-  <div id="loading-screen">
-
-    <div class="loader"></div>
-
-    <p>
-      Initializing Camera...
-    </p>
-
+  <div id="loading">
+    <h1>Loading AR...</h1>
   </div>
 
-
-  <!-- GUIDE -->
-  <div id="scan-guide">
-
-    <div class="scan-box"></div>
-
-    <div class="scan-text">
-      Point camera to packaging
-    </div>
-
-  </div>
-
-
-  <!-- AR -->
-<a-scene
-
-  id="arScene"
-
-  style="
-    position:fixed;
-    top:0;
-    left:0;
-    width:100vw;
-    height:100vh;
-    z-index:1;
-    display:none;
-  "
-
-  mindar-image="
-    imageTargetSrc: ./targets.mind;
-    autoStart: false;
-    uiScanning: false;
-    uiLoading: false;
-  "
-
-  color-space="sRGB"
-
-  renderer="
-    antialias:true;
-    alpha:true;
-    precision: mediump;
-    colorManagement:true;
-  "
-
-  vr-mode-ui="enabled:false"
-
-  device-orientation-permission-ui="enabled:false"
-
->
-
-    <!-- CAMERA -->
-<a-camera
-
-  position="0 0 0"
-
-  look-controls="enabled:false"
-
-  camera="
-    near:0.01;
-    far:10000;
-    fov:80;
-  "
-
->
-</a-camera>
-
-
-    <!-- LIGHT -->
-    <a-light
-      type="ambient"
-      intensity="1.2"
-    >
-    </a-light>
-
-
-    <!-- TARGET -->
-    <a-entity
-      id="target"
-      mindar-image-target="targetIndex: 0"
-    >
-
-      <!-- TEST BOX -->
-      <a-box
-
-        position="0 0 0"
-
-        width="0.5"
-
-        height="0.5"
-
-        depth="0.5"
-
-        color="red"
-
-        animation="
-          property: rotation;
-          to: 0 360 0;
-          loop: true;
-          dur: 4000;
-          easing: linear;
-        "
-
-      >
-      </a-box>
-
-    </a-entity>
-
-  </a-scene>
-
-
-  <!-- JAVASCRIPT -->
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 
 </body>
 </html>
