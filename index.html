@@ -105,38 +105,39 @@
 
 
   <!-- AR SCENE -->
-  <a-scene
+<a-scene
 
-    id="arScene"
+  id="arScene"
 
-    embedded
+  mindar-image="
+    imageTargetSrc: ./assets/targets.mind;
+    autoStart: false;
+    uiScanning: false;
+    uiLoading: false;
+  "
 
-    playsinline
+  color-space="sRGB"
 
-    webkit-playsinline
+  renderer="
+    colorManagement: true;
+    physicallyCorrectLights: true;
+    antialias: true;
+  "
 
-    mindar-image="
-      imageTargetSrc: ./assets/targets.mind;
-      autoStart: false;
-      uiScanning: false;
-      uiLoading: false;
-    "
+  vr-mode-ui="enabled: false"
 
-    color-space="sRGB"
+  device-orientation-permission-ui="enabled: false"
 
-    renderer="
-      colorManagement: true;
-      physicallyCorrectLights: true;
-      antialias: true;
-      precision: medium;
-    "
-
-    vr-mode-ui="enabled: false"
-
-    device-orientation-permission-ui="enabled: false"
-
-    style="display:none"
-  >
+  style="
+    width:100vw;
+    height:100vh;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1;
+    display:none;
+  "
+>
 
 
     <!-- CAMERA -->
