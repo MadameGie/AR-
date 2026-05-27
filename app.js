@@ -17,15 +17,13 @@ const target =
   document.querySelector('#target');
 
 
-// TARGET FOUND
+// TARGET EVENTS
 target.addEventListener('targetFound', () => {
 
   console.log('TARGET FOUND');
 
 });
 
-
-// TARGET LOST
 target.addEventListener('targetLost', () => {
 
   console.log('TARGET LOST');
@@ -33,6 +31,7 @@ target.addEventListener('targetLost', () => {
 });
 
 
+// START BUTTON
 startButton.addEventListener('click', async () => {
 
   try{
@@ -41,24 +40,20 @@ startButton.addEventListener('click', async () => {
     loadingScreen.style.display = 'flex';
 
 
-    // REQUEST CAMERA FIRST
+    // IMPORTANT:
+    // SIMPLE CAMERA REQUEST
+    // DO NOT USE exact/environment
+
     const stream =
       await navigator.mediaDevices.getUserMedia({
 
-        video:{
-
-          facingMode:{
-            exact:'environment'
-          }
-
-        },
-
+        video:true,
         audio:false
 
       });
 
 
-    // CLOSE TEMP STREAM
+    // STOP TEMP STREAM
     stream.getTracks().forEach(track => {
       track.stop();
     });
@@ -68,7 +63,7 @@ startButton.addEventListener('click', async () => {
     arScene.style.display = 'block';
 
 
-    // WAIT SCENE READY
+    // WAIT AFRAME READY
     await new Promise(resolve => {
 
       if(arScene.hasLoaded){
@@ -90,9 +85,51 @@ startButton.addEventListener('click', async () => {
 
 
     // START MINDAR
-    await arScene.systems[
-      'mindar-image-system'
-    ].start();
+    const mindarSystem =
+      arScene.systems['mindar-image-system'];
+
+    await mindarSystem.start();
+
+
+    // FORCE REAR CAMERA AFTER START
+    const video =
+      document.querySelector('video');
+
+    if(video){
+
+      const devices =
+        await navigator.mediaDevices.enumerateDevices();
+
+      const backCamera =
+        devices.find(device => {
+
+          return (
+            device.kind === 'videoinput' &&
+            device.label.toLowerCase().includes('back')
+          );
+
+        });
+
+      if(backCamera){
+
+        const rearStream =
+          await navigator.mediaDevices.getUserMedia({
+
+            video:{
+              deviceId:{
+                exact: backCamera.deviceId
+              }
+            },
+
+            audio:false
+
+          });
+
+        video.srcObject = rearStream;
+
+      }
+
+    }
 
 
     // HIDE LANDING
@@ -113,7 +150,7 @@ startButton.addEventListener('click', async () => {
     console.error(error);
 
     alert(
-      'Camera gagal dibuka. Pastikan HTTPS aktif dan browser mengizinkan kamera.'
+      'Camera gagal dibuka. Coba gunakan Chrome Android terbaru atau Safari iPhone.'
     );
 
   }
