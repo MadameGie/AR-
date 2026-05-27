@@ -261,3 +261,31 @@ a-scene{
   }
 
 }
+
+html,
+body,
+a-scene,
+canvas{
+
+  width:100vw !important;
+  height:100vh !important;
+
+  margin:0 !important;
+  padding:0 !important;
+
+  overflow:hidden !important;
+}
+
+/* FIX CAMERA MOBILE */
+video{
+
+  object-fit:cover !important;
+
+  width:100vw !important;
+  height:100vh !important;
+
+  position:fixed !important;
+
+  top:0;
+  left:0;
+}
