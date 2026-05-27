@@ -13,12 +13,29 @@ const scanGuide =
 const arScene =
   document.querySelector('#arScene');
 
+const target =
+  document.querySelector('#target');
+
+
+target.addEventListener('targetFound', () => {
+
+  console.log('TARGET FOUND');
+
+});
+
+
+target.addEventListener('targetLost', () => {
+
+  console.log('TARGET LOST');
+
+});
+
 
 startButton.addEventListener('click', async () => {
 
   try{
 
-    // CAMERA PERMISSION
+    // REQUEST CAMERA
     const stream =
       await navigator.mediaDevices.getUserMedia({
 
@@ -41,11 +58,7 @@ startButton.addEventListener('click', async () => {
     loadingScreen.style.display = 'flex';
 
 
-    // SHOW AR SCENE
-    arScene.style.display = 'block';
-
-
-    // START MINDAR
+    // START AR
     await arScene.systems[
       'mindar-image-system'
     ].start();
@@ -53,6 +66,10 @@ startButton.addEventListener('click', async () => {
 
     // HIDE LANDING
     landingPage.style.display = 'none';
+
+
+    // SHOW SCENE
+    arScene.style.display = 'block';
 
 
     // HIDE LOADING
@@ -69,24 +86,9 @@ startButton.addEventListener('click', async () => {
     console.error(error);
 
     alert(
-      'Camera gagal dibuka. Pastikan browser mengizinkan kamera dan website menggunakan HTTPS.'
+      'Camera gagal dibuka atau browser tidak support.'
     );
 
   }
-
-});
-
-const target =
-  document.querySelector('[mindar-image-target]');
-
-target.addEventListener("targetFound", () => {
-
-  console.log("TARGET FOUND");
-
-});
-
-target.addEventListener("targetLost", () => {
-
-  console.log("TARGET LOST");
 
 });
